@@ -39,7 +39,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     {
         $product = $this->find($id);
 
-        return $product && $product->stock >= $quantity;
+        if (!$product) {
+            return false;
+        }
+
+        return $product->stock >= $quantity;
     }
 
     /**
@@ -52,14 +56,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function updateStock(int $id, int $quantity): bool
     {
         return DB::transaction(function () use ($id, $quantity) {
-            $product = $this->find($id);
-
-            if (!$product) {
-                return false;
-            }
-
-            $product->stock -= $quantity;
-            return $product->save();
+            return Product::where('id', $id)
+                ->where('stock', '>=', $quantity)
+                ->decrement('stock', $quantity);
         });
     }
 

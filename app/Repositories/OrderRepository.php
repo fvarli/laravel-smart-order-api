@@ -3,7 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 {
@@ -21,11 +23,11 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
      * Get order with its items and customer
      *
      * @param int $id
-     * @return mixed
+     * @return Builder|Model
      */
-    public function findWithRelations(int $id): mixed
+    public function findWithRelations(int $id): Builder|Model
     {
-        return $this->model->with(['items.product', 'customer'])->find($id);
+        return $this->model->with(['items.product', 'customer'])->where('id', $id)->firstOrFail();
     }
 
     /**
