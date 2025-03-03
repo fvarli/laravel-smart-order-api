@@ -33,8 +33,7 @@ class OrderController extends Controller
     public function index(): JsonResponse
     {
         $orders = $this->orderService->getAllOrders();
-
-        return response()->json($orders);
+        return $this->success($orders);
     }
 
     /**
@@ -47,10 +46,9 @@ class OrderController extends Controller
     {
         try {
             $order = $this->orderService->createOrder($request->validated());
-
-            return response()->json($order, 201);
+            return  $this->success($order, 'Order created successfully', 201);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return $this->error($e->getMessage());
         }
     }
 
@@ -65,10 +63,10 @@ class OrderController extends Controller
         $order = $this->orderService->getOrderById($id);
 
         if (!$order) {
-            return response()->json(['error' => 'Order not found'], 404);
+            return $this->error('Order not found', 404);
         }
 
-        return response()->json($order);
+        return  $this->success($order);
     }
 
     /**
@@ -82,9 +80,10 @@ class OrderController extends Controller
         $deleted = $this->orderService->deleteOrder($id);
 
         if (!$deleted) {
-            return response()->json(['error' => 'Order not found'], 404);
+            return $this->error('Order not found', 404);
         }
 
-        return response()->json(['message' => 'Order deleted successfully']);
+        // return response()->json(['message' => 'Order deleted successfully']);
+        return $this->success([], 'Order deleted successfully');
     }
 }

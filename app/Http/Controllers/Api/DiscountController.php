@@ -35,10 +35,10 @@ class DiscountController extends Controller
         $result = $this->discountService->calculateDiscounts($orderId);
 
         if (isset($result['error'])) {
-            return response()->json(['error' => $result['error']], $result['status'] ?? 400);
+            return $this->error($result['error'], $result['status'] ?? 400);
         }
 
-        return response()->json($result);
+        return $this->success($result);
     }
 
 }
