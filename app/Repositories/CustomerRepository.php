@@ -37,15 +37,6 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
      */
     public function updateRevenue(int $id, float $amount): bool
     {
-        return DB::transaction(function () use ($id, $amount) {
-            $customer = $this->find($id);
-
-            if (!$customer) {
-                return false;
-            }
-
-            $customer->revenue += $amount;
-            return $customer->save();
-        });
+        return Customer::where('id', $id)->increment('revenue', $amount);
     }
 }

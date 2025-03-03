@@ -64,10 +64,7 @@ abstract class BaseRepository implements RepositoryInterface
     public function update(int $id, array $data): bool
     {
         $record = $this->find($id);
-        if ($record) {
-            return $record->update($data);
-        }
-        return false;
+        return $record && $record->update($data);
     }
 
     /**
