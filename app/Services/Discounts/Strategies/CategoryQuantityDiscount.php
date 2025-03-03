@@ -30,7 +30,7 @@ class CategoryQuantityDiscount implements DiscountStrategyInterface
             $categoryItems[$categoryId][] = $item;
         }
 
-        // Check category 2 for "buy 6, get 1 free" discount
+        // Check category 2 for "buy 5, get 1 free" discount
         if (isset($categoryItems[2])) {
             foreach ($categoryItems[2] as $item) {
                 // If quantity is 6 or more, give discount for each complete set of 6
@@ -61,6 +61,6 @@ class CategoryQuantityDiscount implements DiscountStrategyInterface
      */
     public function getReason(): string
     {
-        return 'BUY_6_GET_1';
+        return 'BUY_5_GET_1';
     }
 }

@@ -52,7 +52,7 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::updateOrCreate(['id' => $product['id']], $product);
+            Product::query()->updateOrCreate(['id' => $product['id']], $product);
         }
     }
 }
