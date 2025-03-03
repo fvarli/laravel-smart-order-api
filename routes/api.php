@@ -20,8 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::prefix('v1')->group(function () {
 // Order routes
-Route::apiResource('orders', OrderController::class);
+    Route::apiResource('orders', OrderController::class);
 
 // Discount routes
-Route::get('discounts/{orderId}', [DiscountController::class, 'calculate']);
+    Route::get('discounts/{orderId}', [DiscountController::class, 'calculate']);
+});
