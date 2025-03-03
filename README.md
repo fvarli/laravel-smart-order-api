@@ -288,6 +288,36 @@ Import these files into Postman to quickly test the API.
 
 ---
 
+## API Screenshots
+
+Below are screenshots of the API in action, demonstrating the key functionality:
+
+### Order Management
+
+#### Creating a New Order
+![Create Order](resources/docs/postman/screenshots/create-order.png)
+*Screenshot showing the creation of a new order with product items*
+
+#### Order Validation - Out of Stock
+![Order Validation](resources/docs/postman/screenshots/create-order-out-of-stock.png)
+*Screenshot showing validation when trying to order products that are out of stock*
+
+#### Listing All Orders
+![List Orders](resources/docs/postman/screenshots/list-orders.png)
+*Screenshot showing the retrieval of all orders with their details*
+
+### Discount Calculation
+
+#### Category-Based Buy 5 Get 1 Free Discount
+![Category Discount](resources/docs/postman/screenshots/category-buy-6-discount.png)
+*Screenshot showing the discount applied when buying 6 items from a specific category*
+
+#### Order Total Over 1000 + Category Discount
+![Multiple Discounts](resources/docs/postman/screenshots/over-1000-buy-6discount.png)
+*Screenshot showing multiple discount strategies applied together: 10% off for orders over 1000 TL and Buy 5 Get 1 Free*
+
+---
+
 ## Architecture Details
 
 ### Discount Strategy Implementation
