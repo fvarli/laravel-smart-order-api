@@ -34,6 +34,12 @@ An order management and discount calculation API built with **Laravel 10**. This
     - Robust input validation for all requests
     - Meaningful error messages
 
+- **Docker Support**:
+    - Containerized environment for easy setup and deployment
+    - Multi-container configuration with Docker Compose
+    - Separate containers for Laravel app, MySQL, and Nginx
+    - Ready for local development and production
+
 - **Postman Collection & Environment**:
     - Predefined Postman collection and environment files available in resources/docs/postman/ for quick API testing
 
@@ -41,13 +47,15 @@ An order management and discount calculation API built with **Laravel 10**. This
 
 ## Technologies Used
 
-- **Backend**: Laravel 10 (PHP 8.1+)
-- **Database**: MySQL
+- **Backend**: Laravel 10 (PHP 8.2+)
+- **Database**: MySQL 8.0
 - **ORM**: Eloquent ORM
 - **API Design**: RESTful API with versioning (/v1/)
 - **Validation**: Laravel Request Validation
 - **Design Patterns**: Repository, Service, Strategy patterns
 - **Documentation**: Postman collection and environment
+- **Containerization**: Docker, Docker Compose
+- **Web Server**: Nginx
 
 ---
 
@@ -59,6 +67,7 @@ An order management and discount calculation API built with **Laravel 10**. This
 - **Strategy Pattern**: Discount rules implemented as strategies in `App\Services\Discounts\Strategies`
 - **Exception Handling**: Centralized exception handling in `App\Exceptions\Handler.php`
 - **Middleware**: Custom middleware for request/response handling
+- **Docker Infrastructure**: Multi-container setup for application, database, and web server
 
 ---
 
@@ -72,6 +81,10 @@ The project follows a layered architecture with clear separation of concerns:
 - **Controllers**: Handle HTTP requests and responses
 - **Requests**: Validate incoming data
 - **Discount Strategies**: Encapsulate discount calculation logic
+- **Docker Configuration**:
+    - docker-compose.yml: Define multi-container Docker application
+    - Dockerfile: PHP 8.2 configuration for Laravel
+    - nginx/default.conf: Nginx web server configuration
 - **Documentation**:
     - Postman collection: resources/docs/postman/laravel-smart-order-api.postman_collection.json
     - Postman environment: resources/docs/postman/laravel-smart-order-api.postman_environment.json
@@ -96,9 +109,8 @@ The project follows a layered architecture with clear separation of concerns:
 
 ### Prerequisites
 
-- PHP 8.1 or higher
-- Composer
-- MySQL or another database supported by Laravel
+- Docker and Docker Compose installed on your system
+- Git
 
 ### Step 1: Clone the Repository
 
@@ -107,47 +119,101 @@ git clone https://github.com/your-username/laravel-smart-order-api.git
 cd laravel-smart-order-api
 ```
 
-### Step 2: Install Dependencies
+### Step 2: Configure Environment Variables
 
-```bash
-composer install
-```
-
-### Step 3: Configure Environment Variables
-
-Copy the `.env.example` file to `.env` and update the database credentials:
+Copy the `.env.example` file to `.env`:
 
 ```bash
 cp .env.example .env
-php artisan key:generate
 ```
 
-Edit the `.env` file with your database credentials:
+Configure the following environment variables in your `.env` file:
 
 ```bash
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
+APP_KEY=base64:your-app-key
+DB_HOST=db
 DB_DATABASE=smart_order
-DB_USERNAME=root
-DB_PASSWORD=
+DB_USERNAME=smart_order_user
+DB_PASSWORD=your_password
+DB_ROOT_PASSWORD=your_root_password
 ```
 
-### Step 4: Run Migrations and Seeders
+### Step 3: Start Docker Containers
 
 ```bash
+docker-compose up -d
+```
+
+This will start three containers:
+- Laravel application (PHP 8.2)
+- MySQL 8.0 database
+- Nginx web server
+
+### Step 4: Install Dependencies and Set Up Laravel
+
+```bash
+# Enter the app container
+docker-compose exec app bash
+
+# Inside the container, run:
+composer install
+php artisan key:generate
 php artisan migrate --seed
 ```
 
-This will create the necessary database tables and populate them with example data.
+The API will be available at `http://localhost:8001/api/v1/`.
 
-### Step 5: Start the Development Server
+---
+
+## Docker Configuration Details
+
+The project includes the following Docker configuration:
+
+### 1. Docker Compose Setup (docker-compose.yml)
+
+The `docker-compose.yml` file defines three services:
+- **app**: The Laravel application container (PHP 8.2)
+- **db**: MySQL 8.0 database container
+- **webserver**: Nginx web server container
+
+### 2. Laravel Application (Dockerfile)
+
+The `Dockerfile` sets up the PHP environment for Laravel:
+- PHP 8.2 with FPM
+- Required PHP extensions for Laravel
+- Composer for dependency management
+- Appropriate file permissions for Laravel storage and caches
+
+### 3. Web Server (nginx/default.conf)
+
+The `nginx/default.conf` file configures Nginx to:
+- Serve the Laravel application from `/var/www/public`
+- Route requests to the PHP-FPM process in the app container
+- Handle pretty URLs for the Laravel router
+
+### 4. Container Management
+
+Common Docker commands for managing the application:
 
 ```bash
-php artisan serve
-```
+# Start all containers in detached mode
+docker-compose up -d
 
-By default, the API will be available at `http://localhost:8000/api/v1/`.
+# View logs from all containers
+docker-compose logs
+
+# View logs from a specific container
+docker-compose logs app
+
+# Stop all containers
+docker-compose stop
+
+# Stop and remove all containers, networks, and volumes
+docker-compose down
+
+# Rebuild containers after Dockerfile changes
+docker-compose up -d --build
+```
 
 ---
 
@@ -248,6 +314,7 @@ This project demonstrates my approach to building maintainable and extensible AP
 - Clean code practices
 - Thoughtful API design
 - Flexible architecture that allows for easy extension
+- Modern deployment approach with Docker
 
 ---
 
@@ -261,6 +328,8 @@ Potential enhancements for future versions:
 - More sophisticated order management features
 - Reporting and analytics
 - Integration with payment gateways
+- CI/CD pipeline integration
+- Kubernetes deployment configurations
 
 ---
 
