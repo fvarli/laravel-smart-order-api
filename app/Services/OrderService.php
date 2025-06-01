@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Product;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
@@ -139,6 +140,18 @@ class OrderService
      */
     public function deleteOrder(int $id): bool
     {
-        return $this->orderRepository->delete($id);
+        return DB::transaction(function() use ($id) {
+            $order = $this->orderRepository->findWithRelations($id);
+            if (!$order) {
+                return false;
+            }
+
+            foreach ($order->items as $item) {
+                Product::query()->where('id', $item->product_id)
+                    ->increment('stock', $item->quantity);
+            }
+
+            return $this->orderRepository->delete($id);
+        });
     }
 }
